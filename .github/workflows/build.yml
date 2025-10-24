@@ -279,3 +279,10 @@ jobs:
         with:
           name: jacoco-report
           path: target/site/jacoco/
+
+      - name: Upload build artifacts for Sonar
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            target/
