@@ -29,7 +29,23 @@ on:
         required: false
         type: string
         default: "pos-tech-g57-food-app.com.br"
-      #secrets
+      #runsteps
+      run_validation_and_lint:
+        description: "Executar validação e linting (mvn verify)"
+        required: false
+        type: boolean
+        default: true
+      run_build:
+        description: "Executar build (mvn clean package -DskipTests)"
+        required: false
+        type: boolean
+        default: true
+      run_unit_test:
+        description: "Executar Testes Unitários"
+        required: false
+        type: boolean
+        default: true
+    #secrets
     secrets:
       DOCKERHUB_TOKEN:
         required: true
@@ -43,18 +59,7 @@ on:
         required: false
       CLOUDFLARE_EDIT_ZONE_DNS_KEY:
         required: false
-      #runsteps
-      run_validation_and_lint:
-        description: "Executar validação e linting (mvn verify)"
-        required: false
-      run_build:
-        description: "Executar build (mvn clean package -DskipTests)"
-        required: false
-#      run_tests:
-#        description: "Executar testes (mvn test)"
-#        required: false
-#        type: boolean
-#        default: true
+
 
 jobs:
   validation-and-lint:
