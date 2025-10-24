@@ -35,7 +35,7 @@ on:
         required: false
         type: boolean
         default: true
-      run_build-and-test:
+      run_build_and_test:
         description: "Executar build e testes"
         required: false
         type: boolean
@@ -178,7 +178,7 @@ jobs:
 
 
 
-  build-and-test:
+  build_and_test:
     needs: validation-and-lint
     if: ${{ inputs.run_build }}
     runs-on: ubuntu-latest
