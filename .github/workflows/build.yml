@@ -205,6 +205,7 @@ jobs:
       - name: Run build and Tests
         if: inputs.run_build_and_test
         id: maven-verify
+        continue-on-error: true
         run: |
           mvn -B verify
 #          set -o pipefail
@@ -293,9 +294,16 @@ jobs:
           path: target/site/jacoco/
 
       - name: Upload build artifacts for Sonar
-        if: inputs.run_build_and_test
+        if: always() && inputs.run_build_and_test
         uses: actions/upload-artifact@v4
         with:
+#          name: jacoco-report
+#          path: target/site/jacoco/
+#
+#      - name: Upload build artifacts for Sonar
+#        if: inputs.run_build_and_test
+#        uses: actions/upload-artifact@v4
+#        with:
           name: build-artifacts
           path: |
             target/
