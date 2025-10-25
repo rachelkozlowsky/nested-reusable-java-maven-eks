@@ -182,8 +182,8 @@ jobs:
     needs: validation-and-lint
     if: ${{ inputs.run_build_and_test }}
     runs-on: ubuntu-latest
-    outputs:
-      build_status: ${{ steps.set-output.outputs.build_status }}
+#    outputs:
+#      build_status: ${{ steps.set-output.outputs.build_status }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
