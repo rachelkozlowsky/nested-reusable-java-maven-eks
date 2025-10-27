@@ -40,6 +40,10 @@ on:
         required: false
         type: boolean
         default: true
+      gates:
+        description: "Executar gates de qualidade"
+        required: false
+        type: boolean
     #secrets
     secrets:
       DOCKERHUB_TOKEN:
@@ -177,39 +181,45 @@ jobs:
     needs: validation-and-lint
     if: ${{ inputs.run_build_and_test }}
     runs-on: ubuntu-latest
+    outputs:
+      build_ok: ${{ steps.build_and_test_step.outcome }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: ${{ inputs.java_version }}
-          cache: maven
 
-      - name: Run build and Tests
-        if: inputs.run_build_and_test
-        id: maven-verify
-        continue-on-error: true
-        run: |
-          mvn -B verify
+      - name: Build with Maven
+        run: mvn -B -DskipTests clean package
 
-      - name: Generate Jacoco Badge
-        id: jacoco
-        if: inputs.run_build_and_test
-        uses: cicirello/jacoco-badge-generator@v2.0.1
-
-      - name: Upload build artifacts for Sonar
-        if: always() && inputs.run_build_and_test
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
           path: target
 
-      - name: Check for build/test failures
-        if: steps.maven-verify.outcome == 'failure'
+  gates:
+    needs: build_and_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: .
+
+      - name: Verify downloaded artifacts
         run: |
-          echo "::error::Maven build or tests failed. Check the logs in the 'Run build and Tests' step."
-          exit 1
+          if [ ! -d "target" ]; then
+            echo "::error::Artifact 'build-artifacts' not found or vazio"
+            ls -la .
+            exit 1
+          fi
+          echo "Artifacts presentes: $(ls -la target | wc -l)"
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v6.0.0
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
