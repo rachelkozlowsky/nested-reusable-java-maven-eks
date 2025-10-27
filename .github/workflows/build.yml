@@ -8,7 +8,7 @@ on:
         description: "Versão do Java (ex: '17' ou '21')"
         required: false
         type: string
-        default: "17"
+        default: "21"
       app_name:
         required: false
         type: string
@@ -178,6 +178,7 @@ jobs:
 
 
   build_and_test:
+    name: Build & Test
     needs: validation-and-lint
     if: ${{ inputs.run_build_and_test }}
     runs-on: ubuntu-latest
@@ -197,6 +198,7 @@ jobs:
           path: target
 
   gates:
+    name: Quality Gates
     needs: build_and_test
     runs-on: ubuntu-latest
     steps:
