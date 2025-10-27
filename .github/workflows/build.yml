@@ -206,7 +206,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts
-          path: target/
+          path: target
 
       - name: Check for build/test failures
         if: steps.maven-verify.outcome == 'failure'

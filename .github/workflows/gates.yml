@@ -26,22 +26,27 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifacts
-          path: . # Extrai o conteúdo (o diretório target) na raiz do workspace
+          path: .
+        continue-on-error: true
 
       - name: Verify downloaded artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if [ ! -d "target" ]; then
-            echo "::error::Artifact 'build-artifacts' not found or is empty. The build job may have failed."
+          echo "Verificando presença de target..."
+          if [ ! -d "target" ] && [ ! -f "target" ]; then
+            echo "::error::Artifact 'build-artifacts' not found or is empty. Certifique-se que o job de build fez upload com:"
+            echo "  name: build-artifacts"
+            echo "  path: target"
+            echo "Lista de artifacts do repositório (debug):"
+            curl -s -H "Authorization: token $GITHUB_TOKEN" "https://api.github.com/repos/${{ github.repository }}/actions/artifacts" | sed -n '1,200p'
             exit 1
           fi
-          echo "Artifacts downloaded successfully. Directory 'target' is present."
+          echo "Artifacts downloaded successfully. Conteúdo de target:"
           ls -l target
 
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-#          SONAR_HOST_URL: "https://sonarcloud.io"
-
-
-
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
