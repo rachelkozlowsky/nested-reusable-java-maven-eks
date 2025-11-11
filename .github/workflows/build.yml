@@ -354,4 +354,4 @@ jobs:
             exit 1
           fi
 
-          echo "Quality Gate OK"
+          echo "✅ Quality Gate OK"
