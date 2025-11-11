@@ -270,6 +270,7 @@ jobs:
           path: .scannerwork/report-task.txt
 
       - name: Baixar report-task.txt
+        if: ${{ inputs.run_gates && github.ref == 'refs/heads/main' }}
         uses: actions/download-artifact@v4
         with:
           name: sonar-report-task
