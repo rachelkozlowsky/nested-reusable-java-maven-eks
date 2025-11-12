@@ -47,12 +47,10 @@ on:
       run_docker_build_and_push:
         description: 'Executar Build e Push do Docker'
         required: false
-        default: true
         type: boolean
       run_deploy:
         description: 'Executar Deploy'
         required: false
-        default: true
         type: boolean
     #secrets
     secrets:
@@ -376,10 +374,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          echo "✅ APP_NAME: $APP_NAME"
-#          set -euo pipefail
-#          APP_NAME="${{ vars.APP_NAME }}"
-#          docker build -t "${APP_NAME}:latest" .
+          docker build -t ${{ vars.APP_NAME }}:latest .
 
 #      - name: Login to Docker Hub
 #        uses: docker/login-action@v3
