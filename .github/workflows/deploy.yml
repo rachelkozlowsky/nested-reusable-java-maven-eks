@@ -47,7 +47,7 @@ on:
       argocd_admin_password_secret_id:
         required: false
         type: string
-        default: argocd-admin-password4
+        default: argocd-admin-password5
 
     secrets:
       AWS_ACCESS_KEY_ID:
